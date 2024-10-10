@@ -5,15 +5,7 @@ import psycopg2
 from confluent_kafka import Consumer, KafkaError
 
 
-def consume_messages():
-    consumer_config = {
-        'bootstrap.servers': os.getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092,"),
-        'group.id': 'consumer_group',
-        'auto.offset.reset': 'earliest',
-    }
-    consumer = Consumer(consumer_config)
-    consumer.subscribe(['test_topic'])
-    
+def get_db_connection():
     conn = psycopg2.connect(
         dbname=os.getenv("POSTGRES_DB", "test"),
         user=os.getenv("POSTGRES_USER", "postgres"),
@@ -21,6 +13,19 @@ def consume_messages():
         host="postgres",
         port=5432
     )
+    return conn
+
+
+def consume_messages():
+    consumer_config = {
+        'bootstrap.servers': os.getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"),
+        'group.id': 'consumer_group',
+        'auto.offset.reset': 'earliest',
+    }
+    consumer = Consumer(consumer_config)
+    consumer.subscribe(['test_topic'])
+    
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     try:

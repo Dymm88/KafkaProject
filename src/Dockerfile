@@ -1,9 +1,38 @@
 FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     build-essential \
-    libpq-dev \
-    && pip install --no-cache-dir poetry
+    curl \
+    git \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    wget \
+    llvm \
+    libffi-dev \
+    liblzma-dev \
+    python3-openssl \
+    tk-dev \
+    libpq-dev\
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV HOME /root
+ENV PYENV_ROOT $HOME/.pyenv
+ENV PATH $PYENV_ROOT/bin:$PATH
+
+RUN curl https://pyenv.run | bash
+
+RUN bash -c "export PATH=\"$PYENV_ROOT/bin:$PATH\" && \
+    export PYENV_ROOT=\"$PYENV_ROOT\" && \
+    eval \"$(cat $PYENV_ROOT/completions/pyenv.bash)\" && \
+    pyenv install 3.12.0 && \
+    pyenv global 3.12.0"
+
+RUN pip install --no-cache-dir poetry
 
 WORKDIR /app
 

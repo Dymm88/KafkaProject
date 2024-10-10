@@ -24,6 +24,7 @@ services:
 
   postgres:
     image: postgres:12
+    restart: always
     environment:
       POSTGRES_DB: "test"
       POSTGRES_USER: "postgres"
@@ -31,7 +32,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 2s
