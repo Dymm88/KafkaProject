@@ -1,19 +1,25 @@
 import json
 import os
+import time
 
 import psycopg2
 from confluent_kafka import Consumer, KafkaError
 
 
 def get_db_connection():
-    conn = psycopg2.connect(
-        dbname=os.getenv("POSTGRES_DB", "test"),
-        user=os.getenv("POSTGRES_USER", "postgres"),
-        password=os.getenv("POSTGRES_PASSWORD", "postgres"),
-        host="postgres",
-        port=5432
-    )
-    return conn
+    while True:
+        try:
+            conn = psycopg2.connect(
+                dbname=os.getenv("POSTGRES_DB", "test"),
+                user=os.getenv("POSTGRES_USER", "postgres"),
+                password=os.getenv("POSTGRES_PASSWORD", "postgres"),
+                host="postgres",
+                port=5432
+            )
+            return conn
+        except psycopg2.OperationalError:
+            print("Waiting for database to be ready...")
+            time.sleep(5)
 
 
 def consume_messages():

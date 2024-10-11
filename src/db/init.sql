@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS my_table (
+CREATE TABLE IF NOT EXISTS messages (
     id SERIAL PRIMARY KEY,
-    data JSONB
+    text TEXT NOT NULL
 );
