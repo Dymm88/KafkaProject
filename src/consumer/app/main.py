@@ -24,7 +24,7 @@ def get_db_connection():
 
 def consume_messages():
     consumer_config = {
-        'bootstrap.servers': os.getenv("KAFKA_ADVERTISED_LISTENERS", "localhost:9092"),
+        'bootstrap.servers': os.getenv("KAFKA_ADVERTISED_LISTENERS", "kafka:9093"),
         'group.id': 'consumer_group',
         'auto.offset.reset': 'earliest',
     }
