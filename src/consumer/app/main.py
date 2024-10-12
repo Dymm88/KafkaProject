@@ -44,7 +44,7 @@ def consume_messages():
                     continue
                 else:
                     print(msg.error())
-                    break
+                    continue
             
             data = json.loads(msg.value().decode('utf-8'))
             cursor.execute("INSERT INTO messages (text) VALUES (%s)", (data['text'],))
